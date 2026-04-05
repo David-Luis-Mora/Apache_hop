@@ -1,0 +1,7 @@
+id,nombre,edad,email,curso
+1,Ana,23,ana@email.com,Python
+2,Juan,,juan@email,Big Data
+3,Pedro,35,pedro@email.com,Hadoop
+3,Pedro,35,pedro@email.com,Hadoop
+4,Maria,abc,maria@email.com,SQL
+5,,29,sin_nombre@email.com,Python
