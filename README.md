@@ -252,31 +252,3 @@ Pedro,Hadoop  ,3              ,35 ,pedro@email.com
 Maria,SQL     ,4              ,abc,maria@email.com
 ,Python  ,5              ,29 ,sin_nombre@email.com
 ```
-
----
-
-# Relación con Pentaho Data Integration
-
-Apache Hop utiliza conceptos equivalentes:
-
-| Pentaho        | Apache Hop |
-| -------------- | ---------- |
-| Spoon          | Hop GUI    |
-| Transformation | Pipeline   |
-| Job            | Workflow   |
-
-Esto permite aplicar el mismo modelo ETL en entornos modernos.
-
----
-
-# Relación con Big Data
-
-Herramientas ETL como Apache Hop o Pentaho son fundamentales en entornos Big Data porque permiten:
-
-- integrar datos de múltiples fuentes
-- limpiar datos automáticamente
-- mejorar la calidad de la información
-- preparar datos para análisis o machine learning
-- automatizar procesos de integración de datos
-
-En entornos Big Data, los datos provienen de múltiples sistemas, por lo que es necesario procesarlos antes de analizarlos.
