@@ -257,3 +257,17 @@ Pedro,Hadoop  ,3              ,35 ,pedro@email.com
 Maria,SQL     ,4              ,abc,maria@email.com
 ,Python  ,5              ,29 ,sin_nombre@email.com
 ```
+
+
+---
+
+# Configuracion
+Se han utilizado rutas absolutas en la entrada del archivo CSV y en la salida del archivo de texto. Por ello, si al ejecutar el programa se produce un error, será necesario modificar dichas rutas para que coincidan con las ubicaciones correspondientes en el equipo del usuario.
+
+
+<img width="1477" height="718" alt="image" src="https://github.com/user-attachments/assets/1d2ac317-125b-4d5b-997d-edae27acd02e" />
+
+
+<img width="1773" height="805" alt="image" src="https://github.com/user-attachments/assets/3e7e1e1b-5d35-4057-98ca-98db6413b737" />
+
+
