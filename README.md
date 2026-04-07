@@ -99,6 +99,11 @@ ProyectoEduData/
 └── workflows/
 ```
 
+
+Mover la carpeta dentro de hop:
+```bash
+mv ../ProyectoEduData ./
+```
 ---
 
 # Dataset de entrada
