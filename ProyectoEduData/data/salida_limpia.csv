@@ -1,6 +1,6 @@
-nombre_estudiante,curso_nombre,id,edad,email
-Ana  ,Python  ,1              ,23 ,ana@email.com       
-Juan ,Big Data,2              ,,juan@email          
-Pedro,Hadoop  ,3              ,35 ,pedro@email.com     
-Maria,SQL     ,4              ,abc,maria@email.com     
-,Python  ,5              ,29 ,sin_nombre@email.com
+id,nombre_estudiante,edad,curso_nombre,email
+1,Ana,23,Python,ana@email.com
+2,Juan,,Big Data,juan@email.com
+3,Pedro,35,Hadoop,pedro@email.com
+4,Maria,0,SQL,maria@email.com
+5,DESCONOCIDO,29,Python,sin_nombre@email.com
