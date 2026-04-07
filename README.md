@@ -1,6 +1,6 @@
 # Proyecto ETL EduData Canarias con Apache Hop
 
-Este proyecto implementa un proceso ETL (Extract, Transform, Load) utilizando Apache Hop, herramienta moderna equivalente a Pentaho Data Integration (PDI).
+Este proyecto implementa un proceso ETL utilizando Apache Hop, herramienta moderna equivalente a Pentaho Data Integration (PDI).
 
 El objetivo es limpiar y transformar datos educativos procedentes de ficheros CSV con problemas de calidad, como valores vacíos, formatos incorrectos y registros duplicados.
 
@@ -10,7 +10,7 @@ El objetivo es limpiar y transformar datos educativos procedentes de ficheros CS
 
 Sistema operativo:
 
-- Linux (Ubuntu/Debian recomendado)
+- Linux
 
 Software necesario:
 
@@ -66,7 +66,7 @@ cd hop
 
 ---
 
-## 3. Ejecutar la herramienta (equivalente a Spoon)
+## 3. Ejecutar la herramienta
 
 Dar permisos:
 
@@ -91,19 +91,20 @@ ProyectoEduData/
 │
 ├── data/
 │   ├── entrada.csv
-│   └── salida_limpia.csv
+│   └── limpieza_dato.csv
 │
 ├── pipelines/
-│   └── limpieza_datos.hpl
+│   └── limpieza_dato.hpl
 │
 └── workflows/
 ```
 
-
 Mover la carpeta dentro de hop:
+
 ```bash
 mv ../ProyectoEduData ./
 ```
+
 ---
 
 # Dataset de entrada
@@ -129,8 +130,9 @@ id,nombre,edad,email,curso
 Problemas detectados:
 
 - valores vacíos
-- formatos inconsistentes
+- datos incorrectos
 - registros duplicados
+- formato inconsistente
 - nombres de columnas poco claros
 
 ---
@@ -140,13 +142,19 @@ Problemas detectados:
 Archivo:
 
 ```
-pipelines/limpieza_datos.hpl
+pipelines/limpieza_dato.hpl
 ```
 
 Flujo implementado:
 
 ```
 CSV file input
+        ↓
+Replace in string
+        ↓
+String operations
+        ↓
+If Null
         ↓
 Select values
         ↓
@@ -163,58 +171,105 @@ Text file output
 
 ## CSV file input
 
-Carga los datos desde el fichero CSV original.
+Se cargó el fichero CSV original como fuente de datos.
 
 Función:
 
 - lectura de datos
-- detección de columnas
+- detección automática de columnas
+- preparación de los datos para su transformación
+
+---
+
+## Replace in string
+
+Se sustituyeron valores incorrectos por valores válidos.
+
+Transformaciones realizadas:
+
+- se reemplazó el valor incorrecto **abc** en el campo edad por **0**
+- se corrigió el email incorrecto **juan@email** por **juan@email.com**
+
+Esto permitió estandarizar los datos antes de continuar el proceso ETL.
+
+---
+
+## String operations
+
+Se eliminaron espacios innecesarios al inicio y al final de los campos.
+
+Ejemplo:
+
+```
+"Ana   " → "Ana"
+"Python  " → "Python"
+```
+
+Esto permitió mejorar la calidad de los datos y evitar errores en pasos posteriores.
+
+---
+
+## If Null
+
+Se sustituyeron valores nulos o vacíos por valores por defecto.
+
+Transformaciones aplicadas:
+
+- el campo nombre vacío se reemplazó por **DESCONOCIDO**
+- los valores vacíos en edad se sustituyeron por **0**
+
+Esto evita que el dataset final contenga campos vacíos.
 
 ---
 
 ## Select values
 
-Permite modificar los campos del dataset.
+Se renombraron los campos para hacerlos más claros y comprensibles:
 
-En este proyecto:
+| Campo original | Campo nuevo |
+|---------------|------------|
+| nombre | nombre_estudiante |
+| curso | curso_nombre |
 
-- renombrar columnas
-- preparar estructura de datos
+También se reorganizó el orden de las columnas:
 
-Cambios realizados:
-
-| original | nuevo             |
-| -------- | ----------------- |
-| nombre   | nombre_estudiante |
-| curso    | curso_nombre      |
+```
+id, nombre_estudiante, edad, curso_nombre, email
+```
 
 ---
 
 ## Sort rows
 
-Ordena los datos por el campo id.
+Se ordenaron los datos por el campo id para facilitar la detección de registros duplicados.
 
-Se utiliza para facilitar la detección de duplicados.
+El ordenamiento permite agrupar registros iguales consecutivamente.
 
 ---
 
 ## Unique rows
 
-Elimina registros duplicados basándose en el campo id.
+Se eliminaron los registros duplicados basándose en el campo id.
 
 Ejemplo:
-Se elimina la fila repetida con id = 3.
+
+```
+3,Pedro,35,pedro@email.com,Hadoop
+3,Pedro,35,pedro@email.com,Hadoop
+```
+
+Se conserva únicamente un registro.
 
 ---
 
 ## Text file output
 
-Genera el fichero CSV final limpio.
+Se generó un nuevo fichero CSV con los datos limpios y transformados.
 
 Archivo generado:
 
 ```
-data/salida_limpia.csv
+data/limpieza_dato.csv
 ```
 
 ---
@@ -230,7 +285,7 @@ Abrir Apache Hop:
 Abrir el pipeline:
 
 ```
-pipelines/limpieza_datos.hpl
+pipelines/limpieza_dato.hpl
 ```
 
 Ejecutar:
@@ -242,7 +297,7 @@ Run ▶
 El archivo generado se guardará en:
 
 ```
-data/salida_limpia.csv
+data/limpieza_dato.csv
 ```
 
 ---
@@ -250,24 +305,66 @@ data/salida_limpia.csv
 # Resultado final
 
 ```csv
-nombre_estudiante,curso_nombre,id,edad,email
-Ana  ,Python  ,1              ,23 ,ana@email.com
-Juan ,Big Data,2              ,,juan@email
-Pedro,Hadoop  ,3              ,35 ,pedro@email.com
-Maria,SQL     ,4              ,abc,maria@email.com
-,Python  ,5              ,29 ,sin_nombre@email.com
+id,nombre_estudiante,edad,curso_nombre,email
+1,Ana,23,Python,ana@email.com
+2,Juan,0,Big Data,juan@email.com
+3,Pedro,35,Hadoop,pedro@email.com
+4,Maria,0,SQL,maria@email.com
+5,DESCONOCIDO,29,Python,sin_nombre@email.com
 ```
-
 
 ---
 
-# Configuracion
-Se han utilizado rutas absolutas en la entrada del archivo CSV y en la salida del archivo de texto. Por ello, si al ejecutar el programa se produce un error, será necesario modificar dichas rutas para que coincidan con las ubicaciones correspondientes en el equipo del usuario.
+# Relación con Pentaho Data Integration
 
+Apache Hop utiliza el mismo concepto que Pentaho Data Integration:
 
+| Pentaho | Apache Hop |
+|--------|------------|
+| Spoon | Hop GUI |
+| Transformation | Pipeline |
+| Job | Workflow |
+
+Apache Hop es una evolución moderna de Pentaho, manteniendo la misma lógica ETL.
+
+---
+
+# Relación con Big Data
+
+Las herramientas ETL son fundamentales en entornos Big Data porque permiten:
+
+- integrar datos de múltiples fuentes
+- limpiar datos automáticamente
+- mejorar la calidad de la información
+- preparar los datos para análisis
+- automatizar procesos de transformación
+
+En entornos Big Data, los datos suelen provenir de diferentes sistemas y formatos, por lo que es necesario procesarlos antes de su análisis.
+
+---
+
+# Configuración
+
+Se han utilizado rutas absolutas en:
+
+- archivo de entrada CSV
+- archivo de salida CSV
+
+Si el programa genera errores al ejecutarse, se deben modificar las rutas para que coincidan con la ubicación local del proyecto.
+
+Ejemplo:
+
+```
+/home/usuario/Apache_hop/hop/ProyectoEduData/data/entrada.csv
+```
 <img width="1477" height="718" alt="image" src="https://github.com/user-attachments/assets/1d2ac317-125b-4d5b-997d-edae27acd02e" />
 
 
 <img width="1773" height="805" alt="image" src="https://github.com/user-attachments/assets/3e7e1e1b-5d35-4057-98ca-98db6413b737" />
+
+
+
+
+
 
 
